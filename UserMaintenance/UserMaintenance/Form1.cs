@@ -56,5 +56,14 @@ namespace UserMaintenance
                 }
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var fullname = ((User)listBox1.SelectedItem).FullName;
+            var törlendő = (from x in users
+                            where x.FullName == fullname
+                            select x).FirstOrDefault();
+            users.Remove(törlendő);
+        }
     }
 }
