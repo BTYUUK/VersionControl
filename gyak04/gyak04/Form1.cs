@@ -23,6 +23,7 @@ namespace gyak04
         {
             InitializeComponent();
             LoadData();
+            CreateExcel();
         }
 
         private void LoadData() 
@@ -89,7 +90,7 @@ namespace gyak04
                 values[counter, 5] = f.NumberOfRooms;
                 values[counter, 6] = f.FloorArea;
                 values[counter, 7] = f.Price;
-                values[counter, 8] = "=" + GetCell(counter,7)+"*1000000/" + GetCell(counter,6);
+                values[counter, 8] = "=" + GetCell(counter+2,7)+"*1000000/" + GetCell(counter+2,6);
                 counter++;
             }
             xlSheet.get_Range(GetCell(2, 1), GetCell(1 + values.GetLength(0), values.GetLength(1))).Value2 = values;
@@ -107,9 +108,12 @@ namespace gyak04
             tableRange.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThick);
 
             Excel.Range firstColumn = xlSheet.get_Range(GetCell(2, 1), GetCell(1 + values.GetLength(0), 1 ));
-            firstColumn.Interior.Color = Color.LightGreen;
+            firstColumn.Interior.Color = Color.LightYellow;
+            firstColumn.Font.Bold = true;
 
             Excel.Range lastColumn = xlSheet.get_Range(GetCell(2, values.GetLength(1)), GetCell(1 + values.GetLength(0), values.GetLength(1)));
+            lastColumn.Interior.Color = Color.LightGreen;
+            lastColumn.NumberFormat = "###,###.00";
         }
         private string GetCell(int x, int y) 
         {
