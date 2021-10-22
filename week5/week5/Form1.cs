@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +17,15 @@ namespace week5
         PortfolioEntities context = new PortfolioEntities();
         List<Tick> Ticks;
         List<PortfolioItem> Portfolio = new List<PortfolioItem>();
+        List<decimal> Nyereségek = new List<decimal>();
+        
         public Form1()
         {
             InitializeComponent();
             Ticks = context.Tick.ToList();
             dataGridView1.DataSource = Ticks;
-            List<decimal> Nyereségek = new List<decimal>();
+            CreatePorfolio();
+            
             int intervalum = 30;
             DateTime kezdőDátum = (from x in Ticks select x.TradingDay).Min();
             DateTime záróDátum = new DateTime(2016, 12, 30);
@@ -34,11 +38,11 @@ namespace week5
                 Console.WriteLine(i + " " + ny);
             }
 
-            var nyereségekRendezve = (from x in Nyereségek
-                                      orderby x
-                                      select x)
-                                        .ToList();
-            MessageBox.Show(nyereségekRendezve[nyereségekRendezve.Count() / 5].ToString());
+            //var nyereségekRendezve = (from x in Nyereségek
+              //                        orderby x
+              //                        select x)
+              //                          .ToList();
+            //MessageBox.Show(nyereségekRendezve[nyereségekRendezve.Count() / 5].ToString());
         }
         public void CreatePorfolio()
         {
@@ -61,6 +65,34 @@ namespace week5
                 value += (decimal)last.Price * item.Volume;
             }
             return value;
+        }
+
+        private void save()
+        {
+            var nyereségekRendezve = (from x in Nyereségek
+                                      orderby x
+                                      select x)
+                                        .ToList();
+            SaveFileDialog sf = new SaveFileDialog();
+            sf.Filter = "Text files (*.txt)|*.txt";//|All files (*.*)|*.*";
+            if (sf.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter sw = new StreamWriter(sf.FileName))
+                {
+                    sw.WriteLine("időszak nyereség");
+                    for (int i = 0; i < nyereségekRendezve.Count; i++)
+                    {
+                        
+                        sw.WriteLine((i + 1).ToString() + ". " + nyereségekRendezve[i]);
+                    }
+                }
+            }
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            save();
         }
     }
 }
