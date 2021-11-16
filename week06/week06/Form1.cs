@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Xml;
 using week06.MnbServiceReference;
 using week06.Entities;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace week06
 {
@@ -21,7 +22,7 @@ namespace week06
         {
             InitializeComponent();
             dataGridView1.DataSource = Rates;
-            chart1.DataSource = Rates;
+            
             atvaltas();
             xml();
             
@@ -65,7 +66,20 @@ namespace week06
         }
         public void chartolas()
         {
+            chart1.DataSource = Rates;
+            var series = chart1.Series[0];
+            series.ChartType = SeriesChartType.Line;
+            series.XValueMember = "Date";
+            series.YValueMembers = "Value";
+            series.BorderWidth = 2;
 
+            var legend = chart1.Legends[0];
+            legend.Enabled = false;
+
+            var chartArea = chart1.ChartAreas[0];
+            chartArea.AxisX.MajorGrid.Enabled = false;
+            chartArea.AxisY.MajorGrid.Enabled = false;
+            chartArea.AxisY.IsStartedFromZero = false;
         }
     }
 
