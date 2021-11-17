@@ -24,11 +24,8 @@ namespace week06
         public Form1()
         {
             InitializeComponent();
-
+            combo(); 
             RefreshData();
-            
-
-
         }
         public void atvaltas()
         {
@@ -42,8 +39,6 @@ namespace week06
             var response = mnbService.GetExchangeRates(request);
             var result = response.GetExchangeRatesResult;
             Results = result;
-            //MessageBox.Show(result);
-            
         }
         public void xml()
         {
@@ -52,12 +47,15 @@ namespace week06
             xml.LoadXml(Results);
             foreach (XmlElement element in xml.DocumentElement)
             {
+                
                 var rate = new RateData();
                 Rates.Add(rate);
 
                 rate.Date = DateTime.Parse(element.GetAttribute("date"));
                 
                 var childElement = (XmlElement)element.ChildNodes[0];
+                if (childElement == null)
+                    continue;
                 rate.Currency = childElement.GetAttribute("curr");
 
                 var unit = decimal.Parse(childElement.GetAttribute("unit"));
@@ -68,6 +66,7 @@ namespace week06
                 }
                 
             }
+            
         }
         public void chartolas()
         {
@@ -93,8 +92,32 @@ namespace week06
             xml();
             chartolas();
             dataGridView1.DataSource = Rates;
+        }
+
+        public void combo()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+            var request = new GetCurrenciesRequestBody();
+            var response = mnbService.GetCurrencies(request);
+            var result = response.GetCurrenciesResult;
+            var xml = new XmlDocument();
+            xml.LoadXml(result);
+            foreach (XmlElement element in xml.DocumentElement)
+            {
+                string currency;
+                int o = 0;
+                int x = element.ChildNodes.Count;
+                for (int i = 0; i < x; i++)
+                {
+                    var ch = element.ChildNodes[o];
+                    currency = ch.InnerText;
+                    Currencies.Add(currency);
+                    o++;
+                }
+            }
             comboBox1.DataSource = Currencies;
         }
+
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
