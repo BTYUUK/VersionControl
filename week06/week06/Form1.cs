@@ -16,30 +16,34 @@ namespace week06
 {
     public partial class Form1 : Form
     {
-        BindingList<RateData> Rates;
+        
+        BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> Currencies = new BindingList<string>();
         string Results;
+
         public Form1()
         {
             InitializeComponent();
-            dataGridView1.DataSource = Rates;
+
+            RefreshData();
             
-            atvaltas();
-            xml();
-            
-            
+
+
         }
         public void atvaltas()
         {
             var mnbService = new MNBArfolyamServiceSoapClient();
             var request = new GetExchangeRatesRequestBody()
             {
-                currencyNames = "EUR",
-                startDate = "2020-01-01",
-                endDate = "2020-06-30"
+                currencyNames = comboBox1.SelectedItem.ToString(),
+                startDate = dateTimePicker1.Value.ToString(),
+                endDate = dateTimePicker2.Value.ToString()
             };
             var response = mnbService.GetExchangeRates(request);
             var result = response.GetExchangeRatesResult;
             Results = result;
+            //MessageBox.Show(result);
+            
         }
         public void xml()
         {
@@ -50,7 +54,7 @@ namespace week06
             {
                 var rate = new RateData();
                 Rates.Add(rate);
-                
+
                 rate.Date = DateTime.Parse(element.GetAttribute("date"));
                 
                 var childElement = (XmlElement)element.ChildNodes[0];
@@ -62,6 +66,7 @@ namespace week06
                 {
                     rate.Value = value / unit;
                 }
+                
             }
         }
         public void chartolas()
@@ -80,6 +85,30 @@ namespace week06
             chartArea.AxisX.MajorGrid.Enabled = false;
             chartArea.AxisY.MajorGrid.Enabled = false;
             chartArea.AxisY.IsStartedFromZero = false;
+        }
+        public void RefreshData ()
+        {
+            Rates.Clear();
+            atvaltas();
+            xml();
+            chartolas();
+            dataGridView1.DataSource = Rates;
+            comboBox1.DataSource = Currencies;
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();
         }
     }
 
