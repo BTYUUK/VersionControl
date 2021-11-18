@@ -35,7 +35,7 @@ namespace week08
             var jobb = 0;
             foreach (var ball in _balls)
             {
-                ball.MoveBall();
+                ball.MoveToy();
                 if (ball.Left > jobb)
                 {
                     jobb = ball.Left;
