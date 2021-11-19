@@ -8,12 +8,12 @@ using week08.Abstractions;
 
 namespace week08.Entities
 {
-    public class BallFactory : IToyFactory
+    class Car : Toy
     {
-        public Color Ballcolor { get; set; }
-        public Toy CreateNew()
+        protected override void DrawImage(Graphics g)
         {
-            return new Ball(Ballcolor);
+            Image imageFile = Image.FromFile("Images/car.png");
+            g.DrawImage(imageFile, new Rectangle(0, 0, Width, Height));
         }
     }
 }
